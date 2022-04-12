@@ -77,7 +77,7 @@
         cmd: 'show jobs id {{ (download.stdout | from_json).response.result.job }}'
       register: download_job
       until: download_job is not failed and (download_job.stdout | from_json).response.result.job.status == 'FIN'
-      retries: 10
+      retries: 30
       delay: 60
 
     - name: Install latest content
@@ -97,7 +97,7 @@
         cmd: 'show jobs id {{ (install.stdout | from_json).response.result.job }}'
       register: install_job
       until: install_job is not failed and (install_job.stdout | from_json).response.result.job.status == 'FIN'
-      retries: 10
+      retries: 30
       delay: 60  
 
     - name: Download PAN-OS version
@@ -123,7 +123,7 @@
 
     - name: Pause for restart
       pause:
-        seconds: 30
+        seconds: 60
 
     - name: Check to see if device is ready
       paloaltonetworks.panos.panos_op:
@@ -132,5 +132,5 @@
       changed_when: false
       register: result
       until: result is not failed and (result.stdout | from_json).response.result == 'yes'
-      retries: 30
+      retries: 60
       delay: 60
